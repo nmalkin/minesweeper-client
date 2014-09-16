@@ -30,18 +30,12 @@ func PrintOut(line string) {
 	fmt.Println(line)
 }
 
-// Exit with error after printing the given message
-func Exit(message string) {
-	log.Fatalf(message)
-	os.Exit(1)
-}
-
 // Query "info" endpoint and return its result
 func GameInfo() string {
 	endpoint := "http://" + ServerHost + "/info"
 	resp, err := http.Get(endpoint)
 	if err != nil {
-		Exit("failed to connect to server at " + endpoint)
+		log.Fatalf("failed to connect to server at " + endpoint)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -56,7 +50,7 @@ func NewGame() {
 		"version": {fmt.Sprintf("%v", PlayerVersion)},
 	})
 	if err != nil {
-		Exit("failed to connect to server at " + endpoint)
+		log.Fatalf("failed to connect to server at " + endpoint)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -68,14 +62,14 @@ func GetTarget() (int64, int64) {
 	text := ReadIn()
 	split := strings.Split(strings.TrimSpace(text), ",")
 	if len(split) != 2 {
-		Exit("Expecting guess coordinates in x,y form.")
+		log.Fatalf("Expecting guess coordinates in x,y form.")
 	}
 
 	x, err1 := strconv.ParseInt(split[0], 0, 64)
 	y, err2 := strconv.ParseInt(split[1], 0, 64)
 
 	if (err1 != nil) || (err2 != nil) {
-		Exit("Non-integer input for guess coordinates")
+		log.Fatalf("Non-integer input for guess coordinates")
 	}
 
 	return x, y
@@ -92,7 +86,7 @@ func OpenCell(x int64, y int64) string {
 		"y":  {ys},
 	})
 	if err != nil {
-		Exit("failed to connect to server at " + endpoint)
+		log.Fatalf("failed to connect to server at " + endpoint)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -143,7 +137,7 @@ func main() {
 	flag.Parse()
 
 	if PlayerName == "" {
-		Exit("name is a required flag for this program.")
+		log.Fatalf("name is a required flag for this program.")
 	}
 
 	PlayGames(*games)
