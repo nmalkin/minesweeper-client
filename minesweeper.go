@@ -4,11 +4,13 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -17,17 +19,19 @@ var PlayerName string
 var PlayerVersion int
 var ServerHost string
 var CurrentGameID string
+var Stdin io.Reader
+var Stdout io.Writer
 
 // ReadIn a line of input
 func ReadIn() string {
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(Stdin)
 	text, _ := reader.ReadString('\n')
 	return text
 }
 
 // PrintOut a line of output
 func PrintOut(line string) {
-	fmt.Println(line)
+	fmt.Fprintln(Stdout, line)
 }
 
 // Exit with error after printing the given message
@@ -135,15 +139,36 @@ func PlayGames(howMany int) {
 	}
 }
 
+// Launches the AI program, capturing its stdout and stdin
+func LaunchAI(command []string) {
+	cmd := exec.Command(command[0], command[1:]...)
+
+	Stdout, _ = cmd.StdinPipe()
+	Stdin, _ = cmd.StdoutPipe()
+
+	err := cmd.Start()
+	if err != nil {
+		log.Fatalf("error starting the command: %s", err)
+	}
+}
+
 func main() {
 	games := flag.Int("games", 1, "how many games to play")
 	flag.StringVar(&PlayerName, "name", "", "your name")
 	flag.IntVar(&PlayerVersion, "version", -1, "the version of your application")
 	flag.StringVar(&ServerHost, "server", "minesweeper.nm.io", "server to connect to")
 	flag.Parse()
+	command := flag.Args()
 
 	if PlayerName == "" {
 		Exit("name is a required flag for this program.")
+	}
+
+	if len(command) >= 1 {
+		LaunchAI(command)
+	} else {
+		Stdin = os.Stdin
+		Stdout = os.Stdout
 	}
 
 	PlayGames(*games)

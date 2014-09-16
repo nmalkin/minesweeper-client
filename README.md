@@ -36,18 +36,18 @@ the repository.
 
 ## How to run it
 
-The client executable has one required flag: your name, to distinguish your
-submission from everybody else's. You use it like this:
+Run the helper program, followed by the name of your AI's executable as you
+want it executed. (Your command can have many parts.)
 
-    ./minesweeper -name="Vercingetorix"
+    ./minesweeper ./my-ai --win=always
+
+Actually, that won't work exactly: the client executable has one required flag: 
+your name, to distinguish your submission from everybody else's. 
+You use it like this:
+
+    ./minesweeper -name="Vercingetorix" ./my-ai --win=always
 
 There are also some optional flags:
 
 - `games` to specify how many games to play back-to-back
 - `version` the version number of your AI (for scoring)
-
-You'll also need some way to attach the input and output of your program
-to the helper. Here's how you'd do it in some shells:
-
-    ./minesweeper <&1 | ./your-ai >&0
-
