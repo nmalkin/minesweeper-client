@@ -14,6 +14,7 @@ import (
 )
 
 var PlayerName string
+var PlayerVersion int
 var ServerHost string
 var CurrentGameID string
 
@@ -51,7 +52,8 @@ func GameInfo() string {
 func NewGame() {
 	endpoint := "http://" + ServerHost + "/new"
 	resp, err := http.PostForm(endpoint, url.Values{
-		"name": {CurrentGameID},
+		"name":    {PlayerName},
+		"version": {fmt.Sprintf("%v", PlayerVersion)},
 	})
 	if err != nil {
 		Exit("failed to connect to server at " + endpoint)
@@ -136,6 +138,7 @@ func PlayGames(howMany int) {
 func main() {
 	games := flag.Int("games", 1, "how many games to play")
 	flag.StringVar(&PlayerName, "name", "", "your name")
+	flag.IntVar(&PlayerVersion, "version", -1, "the version of your application")
 	flag.StringVar(&ServerHost, "server", "minesweeper.nm.io", "server to connect to")
 	flag.Parse()
 
