@@ -35,6 +35,11 @@ following inputs:
 
 ## How to get it
 
+[Visit the downloads page](downloads.html) and get the binary for your
+architecture.
+
+#### I don't trust your binaries!
+
 Clone this repository, make sure you have
 [Go installed](http://golang.org/doc/install), then run `go build` from inside
 the repository.
