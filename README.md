@@ -1,3 +1,8 @@
+---
+layout: default
+title: Minesweeper Client
+---
+
 Minesweeper Client
 ==================
 
