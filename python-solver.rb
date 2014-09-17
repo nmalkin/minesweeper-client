@@ -5,7 +5,7 @@ HOST = "minesweeper.nm.io"
 class PythonSolver:
   def __init__(self, game_name):
     if game_name is None:
-      raise Exception("A game name is required")      
+      raise Exception("A game name is required")
     self.game_name = game_name
     self.board_size = {}
     self.board = None
@@ -35,11 +35,32 @@ class PythonSolver:
           print self.board[j][i],
       print
 
+  def in_bounds(self,x,y):
+    """Helper method to decide if coord is inside of the board"""
+    if (x < 0 or y < 0):
+      return False
+    if (x >  self.board_size['x'] - 1 or y > self.board_size['y'] - 1):
+      return False
+    return True
+
+  def neighbor_coords(self,x,y):
+    """Returns the coordinates of the neighbourhood, taking into account board dimensions"""
+    neighbors = []
+    if self.in_bounds(x+1, y+1): neighbors.append([x+1,y+1])
+    if self.in_bounds(x+1, y): neighbors.append([x+1,y])
+    if self.in_bounds(x-1, y-1): neighbors.append([x-1,y-1])
+    if self.in_bounds(x-1, y): neighbors.append([x-1,y])
+    if self.in_bounds(x-1, y+1): neighbors.append([x-1,y+1])
+    if self.in_bounds(x, y+1): neighbors.append([x,y+1])
+    if self.in_bounds(x+1, y-1): neighbors.append([x+1,y-1])
+    if self.in_bounds(x, y-1): neighbors.append([x,y-1])
+    return neighbors
+
   def info(self):
     """Calls the info endpoint to get the board size"""
     conn = httplib.HTTPConnection(HOST)
     conn.request("GET", "/info")
-    data = conn.getresponse().read()    
+    data = conn.getresponse().read()
     conn.close()
     return data
 
@@ -80,7 +101,7 @@ class PythonSolver:
         # Calls guess, returning an int with the number of mines, win or lost
         guess_result = self.guess(x,y)
         print " Random Guess: (%s,%s): %s" % (x, y, guess_result)
-        # If we won or lost, bail       
+        # If we won or lost, bail
         if guess_result == "win":
           return "win"
         if guess_result == "lost":
@@ -97,19 +118,16 @@ if __name__ == "__main__":
   # CHANGE HERE ------------------------------
   solver = PythonSolver("diogo-python") # XXX: Replace this with your own unique name
   solver_alg = solver.random_solve      # XXX: Replace this with your own solver method
-  GAMES = 10                            # XXX: replace this with the number of games that you want to play
+  GAMES = 1                           # XXX: replace this with the number of games that you want to play
   # -------------------------------------------
-  
-  results = []  
+
+  results = []
   for _ in range(GAMES):
-    print "# Starting new Game"   
+    print "# Starting new Game"  
     solver.new_game()
-    results.append(solver_alg()) 
+    results.append(solver_alg())
     print " Final board:"
     print
     solver.print_board()
     print
   print "Final Results: %s Wins, %s Losses" % (results.count("win"), results.count("lost"))
-
-
-
