@@ -116,7 +116,7 @@ class PythonSolver:
 if __name__ == "__main__":
 
   # CHANGE HERE ------------------------------
-  solver = PythonSolver("diogo-python") # XXX: Replace this with your own unique name
+  solver = PythonSolver("diogo@squareup.com") # XXX: Replace this with your own unique name
   solver_alg = solver.random_solve      # XXX: Replace this with your own solver method
   GAMES = 1                           # XXX: replace this with the number of games that you want to play
   # -------------------------------------------
