@@ -98,7 +98,7 @@ func OpenCell(x int64, y int64) string {
 }
 
 // Play one instance of a game
-func PlayGame() {
+func PlayGame() bool {
 	// Initiate a game with the client by printing the board parameters.
 	gameInfo := GameInfo()
 	PrintOut(gameInfo)
@@ -119,18 +119,29 @@ func PlayGame() {
 		// then the game has ended for one reason or another.
 		_, notAnInt := strconv.ParseInt(result, 0, 64)
 		if notAnInt != nil {
-			break
+			if result == "win" {
+				return true
+			} else {
+				return false
+			}
 		}
 
 		x, y = GetTarget()
 	}
+	return false
 }
 
-// Plays the specified number of games
-func PlayGames(howMany int) {
+// Plays the specified number of games, returns the number of games won
+func PlayGames(howMany int) int {
+	wins := 0
 	for i := 0; i < howMany; i++ {
-		PlayGame()
+		win := PlayGame()
+		if win {
+			wins++
+		}
 	}
+
+	return wins
 }
 
 // Launches the AI program, capturing its stdout and stdin
@@ -165,5 +176,6 @@ func main() {
 		Stdout = os.Stdout
 	}
 
-	PlayGames(*games)
+	wins := PlayGames(*games)
+	fmt.Printf("%v games played, %v games won\n", *games, wins)
 }
