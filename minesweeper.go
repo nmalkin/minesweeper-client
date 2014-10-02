@@ -132,9 +132,16 @@ func PlayGame() bool {
 }
 
 // Plays the specified number of games, returns the number of games won
-func PlayGames(howMany int) int {
+func PlayGames(command []string, howMany int) int {
 	wins := 0
 	for i := 0; i < howMany; i++ {
+		if len(command) >= 1 {
+			LaunchAI(command)
+		} else {
+			Stdin = os.Stdin
+			Stdout = os.Stdout
+		}
+
 		win := PlayGame()
 		if win {
 			wins++
@@ -169,13 +176,6 @@ func main() {
 		log.Fatalf("name is a required flag for this program.")
 	}
 
-	if len(command) >= 1 {
-		LaunchAI(command)
-	} else {
-		Stdin = os.Stdin
-		Stdout = os.Stdout
-	}
-
-	wins := PlayGames(*games)
+	wins := PlayGames(command, *games)
 	fmt.Printf("%v games played, %v games won\n", *games, wins)
 }
