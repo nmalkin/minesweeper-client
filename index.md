@@ -40,7 +40,7 @@ architecture.
 
 #### I don't trust your binaries!
 
-Clone this repository, make sure you have
+Clone [this repository](https://github.com/nmalkin/minesweeper-client), make sure you have
 [Go installed](http://golang.org/doc/install), then run `go build` from inside
 the repository.
 
